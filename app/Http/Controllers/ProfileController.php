@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Gym;
+use App\Http\Resources\Users as UserResource;
 use App\Profile;
 use App\User;
 use Illuminate\Http\Request;
@@ -9,13 +11,8 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
 
-
-    /**
+        /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -59,10 +56,12 @@ class ProfileController extends Controller
         }
 
         $profile = new Profile();
+
         $profile->user_id = $request->input('user_id');
         $profile->age = $request->input('age');
         $profile->weight = $request->input('weight');
         $profile->targetWeight = $request->input('targetWeight');
+        $profile->gym_id = $request = $request->input('gym_id');
         $profile->latitude = $request->input('latitude');
         $profile->longitude = $request->input('longitude');
 
@@ -85,7 +84,10 @@ class ProfileController extends Controller
     {
         //
         $profile = User::find($id)->profile;
-        return array('profile'=>$profile);
+
+//        return new UserResource($profile);
+        return array('profile'=> $profile);
+
 
     }
 

@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Gym;
+use App\Http\Resources\Sessions as SessionResource;
 use App\Session;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class SessionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -58,9 +56,8 @@ class SessionController extends Controller
         $session->user_id = $request->input('user_id');
         $session->exerciseType = $request->input('exerciseType');
         $session->Sets = $request->input('Sets');
-        $session->duration = $request->input('duration');
-        $session->latitude = $request->input('latitude');
-        $session->longitude = $request->input('longitude');
+        $session->gym_id = $request->input('gym_id');
+        $session->instructor_id = $request->input('instructor_id');
 
         $session->save();
 
@@ -74,15 +71,16 @@ class SessionController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return array
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function show($id)
     {
         //
         $session = User::find($id)->session;
-
-
-        return array('error'=>false, 'sessions'=>$session);
+//        $session = Session::all();
+        return SessionResource::collection($session);
+//        return response()->json($session);
+//        return array('session'=> $session);
     }
 
     /**

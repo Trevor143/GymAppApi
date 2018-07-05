@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('login', 'API\AuthController@login');
 Route::post('register', 'API\AuthController@register');
+
 Route::post('details', 'API\AuthController@details');
 
 Route::get('profile', 'ProfileController@index');
@@ -29,6 +30,17 @@ Route::get('profile/{id}', 'ProfileController@show');
 //sessions routes
 Route::post('savesession', 'SessionController@store');
 Route::get  ('showsession/{id}', 'SessionController@show');
+
+//Route::get  ('session/{id}', 'SessionController@show');
+
+
+Route::get('gyms', 'GymController@index');
+Route::get('gyms/{id}', 'GymController@select');
+
+Route::get('showUsers/{id}', 'GymController@showUsers');
+
+Route::get('instructor/{id}','InstructorController@instingym');
+
 
 
 

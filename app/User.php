@@ -35,4 +35,7 @@ class User extends Authenticatable
     public function session(){
         return $this->hasMany('App\Session');
     }
+    public function gym(){
+        return $this->belongsTo('App\Gym');
+    }
 }
