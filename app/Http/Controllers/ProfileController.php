@@ -78,15 +78,15 @@ class ProfileController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return array
+     * @return UserResource
      */
     public function show($id)
     {
         //
         $profile = User::find($id)->profile;
 
-//        return new UserResource($profile);
-        return array('profile'=> $profile);
+        return new UserResource($profile);
+//        return array('profile'=> $profile);
 
 
     }

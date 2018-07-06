@@ -36,6 +36,8 @@ Route::get  ('showsession/{id}', 'SessionController@show');
 
 Route::get('gyms', 'GymController@index');
 Route::get('gyms/{id}', 'GymController@select');
+Route::get('gyms/instructors/{id}', 'GymController@showinstructors');
+
 
 Route::get('showUsers/{id}', 'GymController@showUsers');
 

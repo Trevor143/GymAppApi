@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\Registers;
 use App\User;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
 
 class AuthController extends Controller
 {
@@ -24,26 +27,32 @@ class AuthController extends Controller
         $user->gender=$request->gender;
         $user->password =bcrypt($request->password);
 
-        $user->save();
+        $check = DB::table('users')->select('email')->where('email','=',$request->email)->exists();
 
-        $guzzle = new Client;
+        if($check){
+            return Response::json(array('success'=> 0 ),200);
+        }
+        else {
 
-        $response = $guzzle->post('http://gymapp.test/oauth/token', [
-            'form_params' => [
-                'grant_type' => 'password',
-                'client_id' => '2',
-                'client_secret' => '6noTyxC8x4E5R2QrR9jw9Qazfd1sKROMqlvz2lCP',
-                'username'=>$request->email,
-                'password'=>$request->password,
-                'scope' => '',
-            ],
-        ]);
-        return $response;
-//        return response(['data'=> json_decode((string) $response->getBody(),true)]);
+            $user->save();
 
-//        return json_decode((string) $response->getBody(), true)['access_token'];
+            $guzzle = new Client;
 
+            $response = $guzzle->post('http://gymapp.test/oauth/token', [
+                'form_params' => [
+                    'grant_type' => 'password',
+                    'client_id' => '2',
+                    'client_secret' => 'p0m8O4RfGMqGePdiJjYA3yY1wi1AmAKpIiNG3fgI',
+                    'username' => $request->email,
+                    'password' => $request->password,
+                    'scope' => '',
+                ],
+            ]);
 
+            return Response::json(array('data' => $user, 'success' => 1, 'response' => $response->getBody()), 200);
+//        return json_decode((string) $response->getBody(), true);
+
+        }
 
     }
 
@@ -56,7 +65,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user){
-            return response(['status'=>'error', 'meesage'=> 'User not found']);
+            return response(['status'=>'error','success' => 0, 'meesage'=> 'User not found']);
         }
 
         if (Hash::check($request->password, $user->password)){
@@ -66,15 +75,25 @@ class AuthController extends Controller
                 'form_params' => [
                     'grant_type' => 'password',
                     'client_id' => '2',
-                    'client_secret' => '6noTyxC8x4E5R2QrR9jw9Qazfd1sKROMqlvz2lCP',
+                    'client_secret' => 'p0m8O4RfGMqGePdiJjYA3yY1wi1AmAKpIiNG3fgI',
                     'username'=>$request->email,
                     'password'=>$request->password,
                     'scope' => '',
                 ],
             ]);
 
-        return response(['data'=> json_decode((string) $response->getBody(),true)]);
+            return Response::json(array(
+                'user_id' => $user->id,
+                'name'=>$user->name,
+                'email'=>$user->email,
+                'success' => 1,
+                'response' => json_decode((string) $response->getBody()), 200));
 
+
+//            return response(['data'=> json_decode((string) $response->getBody(),true)]);
+//
+        } else{
+            return Response::json(array('success'=>0, 'error'=>'Wrong password'));
         }
     }
 }

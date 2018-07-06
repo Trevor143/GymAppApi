@@ -2,11 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Gym;
-use App\Instructor;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Sessions extends JsonResource
+class Registers extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,12 +16,9 @@ class Sessions extends JsonResource
     {
 //        return parent::toArray($request);
         return [
-            'exerciseType' => $this->exerciseType,
-            'Sets' => $this->Sets,
-            'gymName'=> Gym::find($this->gym_id)->name,
-            'InstructorName'=> Instructor::find($this->instructor_id)->name,
+          'id'=>$request->id,
+          'name'=>$request->name,
+//          'access_token' =>$request->access_token,
         ];
     }
-
-
 }
